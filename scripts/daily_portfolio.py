@@ -118,16 +118,21 @@ def extract_text(response):
 
 
 def oracle_sources(response, seeded):
-    urls = list(seeded)
+    # Cite only pages actually returned by this scheduled web research. Tracker leads
+    # are search hints and aren't represented as sources that the API necessarily read.
+    urls = []
     for item in response.get("output", []):
         if item.get("type") == "web_search_call":
             for source in item.get("action", {}).get("sources", []):
                 url = source.get("url", "")
-                if urllib.parse.urlparse(url).hostname == "docs.oracle.com":
+                parsed = urllib.parse.urlparse(url)
+                if parsed.hostname == "docs.oracle.com" and parsed.path.rstrip("/") not in {
+                    "", "/en/cloud/saas/human-resources"
+                }:
                     urls.append(url)
     unique = []
     for url in urls:
-        if urllib.parse.urlparse(url).hostname == "docs.oracle.com" and url not in unique:
+        if url not in unique:
             unique.append(url)
     return unique
 
