@@ -1,0 +1,59 @@
+name: Daily HCM portfolio maintenance
+
+on:
+  schedule:
+    # 08:00 Asia/Kolkata (02:30 UTC). Scheduled runs can be delayed by GitHub.
+    - cron: "30 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: hcm-portfolio-daily
+  cancel-in-progress: false
+
+jobs:
+  audit-and-prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Read instructions, audit tracker, and prepare due draft
+        id: audit
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_TOKEN: ${{ github.token }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL }}
+        run: python scripts/daily_portfolio.py
+
+      - name: Commit and open a review PR
+        if: steps.audit.outputs.generated == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ steps.audit.outputs.branch }}
+          TITLE: ${{ steps.audit.outputs.title }}
+          ARTICLE_PATH: ${{ steps.audit.outputs.path }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add "$ARTICLE_PATH" PUBLICATION-TRACKER.md
+          git commit -m "draft: prepare scheduled Oracle HCM publication"
+          git push --set-upstream origin "$BRANCH"
+          gh pr create --base main --head "$BRANCH" --title "Draft: $TITLE" --body "Automated research draft for review. Verify every Oracle object, attribute, code sample, and release dependency against the cited Oracle Help Center sources and target tenant before merging. This PR does not publish automatically."
+
+      - name: Daily audit summary
+        if: always()
+        run: echo "Daily repository audit ran. Generated articles are only candidates; PR merge remains a human review step."
