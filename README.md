@@ -9,6 +9,7 @@ A source-backed technical knowledge repository for Oracle Fusion Cloud HCM. It f
 - [12-week publication calendar](PUBLICATION-CALENDAR.md)
 - [Publication tracker](PUBLICATION-TRACKER.md)
 - [Repository authoring and accuracy rules](AGENTS.md)
+- [Daily automation setup, credentials, and permissions](AUTOMATION-SETUP.md)
 
 ## Articles
 ### Data loading and migration
