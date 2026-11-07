@@ -18,11 +18,15 @@ A source-backed technical knowledge repository for Oracle Fusion Cloud HCM. It f
 ### Integrations
 - [REST rehire scenario: add a work relationship](articles/rest-rehire-work-relationship.md)
 
+### SQL and reporting
+- [US new-hire report with hire-date assignment and salary](articles/us-new-hire-report.md)
+- [SQL source file](sql/us-new-hire-report.sql)
+
 ## Coverage
 The roadmap rotates through Core HCM, SQL and reporting, HDL/HSDL, Fast Formula, HCM Extracts, BI Publisher, OTBI, REST APIs, OIC, HCM security, Payroll, Absence, troubleshooting, and technical interviews.
 
 ## Publication policy
-The target is two substantive publications per calendar week: one tutorial and one practical scenario. Daily automation checks the repository and prepares a scheduled candidate PR when enabled. It does not merge PRs or publish directly to `main`.
+The target is two substantive publications per calendar week: one tutorial and one practical scenario. Daily automation checks the repository and prepares a scheduled candidate PR when enabled. It does not merge PRs or publish directly to main.
 
 ## Contributions and corrections
 Prefer specific Oracle Help Center references. Report a documentation mismatch with the release, object or API resource, and official source link. Do not include personal employee data, credentials, or customer-confidential material.
